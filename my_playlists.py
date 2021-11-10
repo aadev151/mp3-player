@@ -1,3 +1,9 @@
+"""
+The widget that shows a collection of
+a user's playlists in a QListWidget
+"""
+
+
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtGui import QPixmap
 import sqlite3
@@ -22,6 +28,9 @@ class MyPlaylists(QMainWindow, my_playlists_ui.Ui_Form):
         self.update_data()
 
     def update_data(self):
+        """The function updates the QListWidget,
+                 which stores all uploaded tracks"""
+
         self.listWidget.clear()
         connection = sqlite3.connect('static/db.db')
         all_music = connection.cursor().execute('SELECT name FROM playlists')\
