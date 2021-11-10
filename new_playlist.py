@@ -1,3 +1,8 @@
+"""
+The widget allows users to create a new playlist
+"""
+
+
 from PyQt5.QtWidgets import QMainWindow, QMessageBox
 from PyQt5.QtGui import QPixmap
 import sqlite3
@@ -10,7 +15,7 @@ class NewPlaylist(QMainWindow, new_playlists_ui.Ui_Form):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.tracks = ''
+        self.tracks = ''  # All chosen tracks
         self.initUI()
 
     def initUI(self):
@@ -22,6 +27,9 @@ class NewPlaylist(QMainWindow, new_playlists_ui.Ui_Form):
         self.update_data()
 
     def update_data(self):
+        """The function updates the QListWidget,
+                 which stores all uploaded tracks"""
+        
         self.listWidget.clear()
         connection = sqlite3.connect('static/db.db')
         all_music = connection.cursor().execute('SELECT * FROM music')\
@@ -32,6 +40,9 @@ class NewPlaylist(QMainWindow, new_playlists_ui.Ui_Form):
         self.listWidget.itemClicked.connect(self.add_song)
 
     def add_song(self, item):
+        """The function adds a track in the playlist,
+        given that it was clicked on"""
+        
         connection = sqlite3.connect('static/db.db')
         track_id = connection.cursor().execute(
             f"SELECT id FROM music WHERE dir = "
@@ -44,6 +55,7 @@ class NewPlaylist(QMainWindow, new_playlists_ui.Ui_Form):
 
     def create_playlist(self):
         if not self.tracks:
+            # Checking that tracks were added
             QMessageBox.information(self,
                                     'Добавьте музыку',
                                     'Сначала добавьте музыку')
@@ -51,6 +63,7 @@ class NewPlaylist(QMainWindow, new_playlists_ui.Ui_Form):
 
         name = self.lineEdit.text()
         if not name:
+            # Checking that a name is typed
             QMessageBox.information(self,
                                     'Дайте название плейлисту',
                                     'Дайте название плейлисту')
@@ -76,6 +89,7 @@ class NewPlaylist(QMainWindow, new_playlists_ui.Ui_Form):
 
     def closeEvent(self, event):
         if self.tracks:
+            # After closing the window, the tracks will not be saved
             if QMessageBox.question(self,
                                     'Изменения не сохранены',
                                     'Если Вы закроете окно, '
