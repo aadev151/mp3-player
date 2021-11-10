@@ -1,3 +1,10 @@
+"""
+This is a start screen of the app.
+If the user is authenticated, it will redirect her to the main screen.
+Otherwise, it will ask her to input her name.
+"""
+
+
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QInputDialog
 from PyQt5.QtGui import QPixmap
