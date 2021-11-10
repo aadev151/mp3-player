@@ -1,3 +1,10 @@
+"""
+The window shows a playlist.
+The music is stored on a QListWidget, similarly to
+one on the Main screen
+"""
+
+
 import os
 from PyQt5.QtWidgets import QMainWindow, QMessageBox
 from PyQt5.QtGui import QPixmap
@@ -24,6 +31,9 @@ class Playlist(QMainWindow, playlist_ui.Ui_Form):
         self.update_data()
 
     def update_data(self):
+        """The function updates the QListWidget,
+                 which stores all uploaded tracks"""
+        
         self.listWidget.clear()
         connection = sqlite3.connect('static/db.db')
         all_ids = connection.cursor().execute('SELECT content FROM playlists '
@@ -47,6 +57,8 @@ class Playlist(QMainWindow, playlist_ui.Ui_Form):
         self.listWidget.itemClicked.connect(self.open_player)
 
     def open_player(self, item):
+        # Check whether a file still exists
+        # and deleting it from the database if not
         if os.path.isfile(item.text().split('[(')[-1][:-2]):
             self.player = PlayMusic(item.text().split('[(')[-1][:-2])
             self.player.show()
