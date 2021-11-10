@@ -1,3 +1,13 @@
+"""
+This is the main screen of the app.
+Here:
+- the library of the music is stored;
+- the opportunity to upload a new track is given;
+- the opportunity to upload/download the library is given;
+- the playlists can be created and viewed.
+"""
+
+
 import os
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox
 from PyQt5.QtGui import QPixmap
@@ -35,6 +45,9 @@ class MainScreen(QMainWindow, main_ui.Ui_MainWindow):
         self.update_data()
 
     def update_data(self):
+        """The function updates the QListWidget,
+         which stores all uploaded tracks"""
+
         self.listWidget.clear()
         connection = sqlite3.connect('static/db.db')
         all_music = connection.cursor().execute(
@@ -45,6 +58,9 @@ class MainScreen(QMainWindow, main_ui.Ui_MainWindow):
         self.listWidget.itemClicked.connect(self.open_player)
 
     def open_player(self, item):
+        """The function opens player"""
+
+        # Check whether a file still exists
         if os.path.isfile(item.text().split('[(')[-1][:-2]):
             self.player = PlayMusic(item.text().split('[(')[-1][:-2])
             self.player.show()
@@ -60,6 +76,8 @@ class MainScreen(QMainWindow, main_ui.Ui_MainWindow):
             self.update_data()
 
     def choose_file(self):
+        """The function chooses a new MP3 track"""
+
         filename = QFileDialog.getOpenFileName(self, 'Выбрать песню',
                                                'MP3 файл (*.mp3)')[0]
         if filename:
@@ -85,10 +103,20 @@ class MainScreen(QMainWindow, main_ui.Ui_MainWindow):
             connection.close()
 
     def share_screen(self):
+        """The function opens a share screen"""
+
         self.share = ShareScreen()
         self.share.show()
 
     def export_data(self):
+        """The function exports data about the stored music
+        to os.getcwd() + /data.moob
+
+        Example of content of data.moob:
+        Mask Off 	[(/Users/user/Downloads/Mask Off.mp3])
+        Life is Good    [(/Users/user/Downloads/LG.mp3])
+        """
+        
         with open('data.moob', 'w') as export_file:
             export_file.write(
                 '\n'.join([self.listWidget.item(x).text()
@@ -101,6 +129,10 @@ class MainScreen(QMainWindow, main_ui.Ui_MainWindow):
                                 f'{os.getcwd() + "/data.moob"}')
 
     def load_data(self):
+        """The function loads data about music in the format
+        of data.moob, which is described in
+        export_data()"""
+        
         filename = QFileDialog.getOpenFileName(self,
                                                'Загрузить медиатеку',
                                                'Медиатека (*.moob)')[0]
@@ -126,9 +158,13 @@ class MainScreen(QMainWindow, main_ui.Ui_MainWindow):
             QMessageBox.information(self, 'Успешно!', 'Успешно!')
 
     def create_playlist(self):
+        """The function creates a new playlist"""
+        
         self.create_playlist_screen = NewPlaylist()
         self.create_playlist_screen.show()
 
     def show_playlists(self):
+        """The function shows existing playlists"""
+        
         self.show_playlists_screen = MyPlaylists()
         self.show_playlists_screen.show()
