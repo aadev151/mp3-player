@@ -1,2 +1,2 @@
 # mp3-player
-## Пожалуйста, обратите внимание, что главный (стартовый) файл программы - *app.py*
+## The main (starting) file of the program is _app.py_
